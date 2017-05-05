@@ -21,13 +21,14 @@ public class Test {
 		/*
 		 * Aggiunta dei nodi al Grafo!
 		 */
-		Nodo [] grafo = {nodoF, nodoC, nodoE, nodoD};
+		Nodo [] nodes = {nodoF, nodoC, nodoE, nodoD};
+		
 		
 		/*
 		 * Creazione dei rami che collegano i vari nodi
 		 */
 		
-		MatriceAdiacenze matrix = new MatriceAdiacenze(grafo.length);
+		MatriceAdiacenze matrix = new MatriceAdiacenze(nodes.length);
 		/*matrix.collegaNodi(nodoA.getIDNodo(), nodoB.getIDNodo(), 2);
 		matrix.collegaNodi(nodoA.getIDNodo(), nodoC.getIDNodo(), 8);
 		matrix.collegaNodi(nodoD.getIDNodo(), nodoC.getIDNodo(), 2);
@@ -51,6 +52,7 @@ public class Test {
 		matrix.linkNode(nodoF.getIDNode(), nodoE.getIDNode(), 1);
 		matrix.linkNode(nodoE.getIDNode(), nodoD.getIDNode(), 1);
 		
+		Graph graph = new Graph(nodes, matrix);
 		
 		/*
 		 * Stampa di prova a schermo della matrice delle adiacenze
@@ -66,7 +68,7 @@ public class Test {
 		/*
 		 * Applicazione dell'algoritmo di Dijkstra
 		 */
-		Dijkstra dijkstra = new Dijkstra(grafo, matrix);
+		Dijkstra dijkstra = new Dijkstra(graph, matrix);
 		dijkstra.executeAlgorithm();
 	}
 

@@ -7,7 +7,7 @@ import java.util.Vector;
  */
 
 public class Dijkstra {
-	private Nodo [] graph;
+	private Graph graph;
 	private Double [] nodeDistances; 
 	private Vector<Nodo> orderVisitedNodes;
 	private int [] previousSteps;
@@ -19,13 +19,13 @@ public class Dijkstra {
 	 * @param matrix Matrice delle adiacenze che fornisce i collegamenti fra i nodi e i rispettivi pesi.
 	 */
 	
-	public Dijkstra(Nodo [] graph, MatriceAdiacenze matrix){
+	public Dijkstra(Graph graph, MatriceAdiacenze matrix){
 		this.graph = graph;
 		this.matrix = matrix;
-		orderGraphByID(graph);
+		orderGraphByID(graph.nodes);
 		orderVisitedNodes = new Vector<>();
-		previousSteps = new int[graph.length];
-		nodeDistances = new Double[graph.length];
+		previousSteps = new int[graph.nodes.length];
+		nodeDistances = new Double[graph.nodes.length];
 	}
 	
 	/**
@@ -40,7 +40,7 @@ public class Dijkstra {
 		 * a null dalla JVM.
 		 */
 		
-		for(Nodo node : graph){
+		for(Nodo node : graph.nodes){
 			nodeDistances[node.getIDNode()] = Double.POSITIVE_INFINITY;
 		}
 		
@@ -57,14 +57,14 @@ public class Dijkstra {
 			int indexNode = getIndexOfMinimumNodeDistance(); //imposta l'indice del nodo che ha distanza minore
 			if(nodeDistances[indexNode] == Double.POSITIVE_INFINITY) //se il grafo presenta nodi irraggiungibili
 				break;
-			orderVisitedNodes.addElement(graph[indexNode]); //aggiungi il nodo alla lista dei nodi visitati
-			if(graph[indexNode].isDestinationNode()){ //se si tratta del nodo di destinazione
+			orderVisitedNodes.addElement(graph.nodes[indexNode]); //aggiungi il nodo alla lista dei nodi visitati
+			if(graph.nodes[indexNode].isDestinationNode()){ //se si tratta del nodo di destinazione
 				printOrderVisitedNodes();
 				printShortestPath(indexNode);
 				break;
 			}
 			
-			graph[indexNode] = null; //libera la memoria
+			graph.nodes[indexNode] = null; //libera la memoria
 			
 			/*
 			 * Fase importante: ciclo interno. Viene eseguito per ogni nodo adiacente a quello che ha
