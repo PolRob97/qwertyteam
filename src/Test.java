@@ -1,9 +1,16 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+
+import javax.xml.stream.FactoryConfigurationError;
+import javax.xml.stream.XMLStreamException;
+
 public class Test {
 
-	public static void main(String[] args) {
+	public static final String FILE_NAME = "input.xml"; // carica il file xml
+	public static void main(String[] args) throws FileNotFoundException, XMLStreamException, FactoryConfigurationError {
 		// TODO Auto-generated method stub
 		System.out.println("Hello World!");
-		
+		System.out.println((new StaxParsing()).processXMLFile(new File(FILE_NAME)).toString()); // semplicemente stampa quello che c'è nel buffer
 		/*
 		 * Creazione dei nodi del grafo!
 		 */
