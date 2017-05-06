@@ -32,8 +32,6 @@ public class Graph {
 		for(int i=0; i<n_vertici; i++){
 			if(!visited[i]){
 				System.out.println("crd");
-				boolean speranza = isCyclicUtil(i, visited, -1);
-				System.out.println(speranza);
 				if(isCyclicUtil(i, visited, -1)){
 					return true;
 				}
