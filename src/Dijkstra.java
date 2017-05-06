@@ -1,10 +1,13 @@
 import java.util.Arrays;
 import java.util.Vector;
 
+import javax.xml.stream.XMLStreamException;
+
 /**
  * Classe che fornisce i metodi per applicare ad un dato grafo l'algoritmo di Dijkstra.
  * @author Qwertyteam
- * @version 1.2
+ * @version 1.4
+ * @since 1.0
  */
 
 public class Dijkstra {
@@ -12,6 +15,7 @@ public class Dijkstra {
 	private Double [] nodeDistances; 
 	private Vector<Nodo> orderVisitedNodes;
 	private int [] previousSteps;
+	private String fileName;
 	private static final String ALGORITHM_INITIAL_STATUS = "Inizio esecuzione dell'Algoritmo di Dijkstra...";
 	private static final String ALGORITHM_FINAL_STATUS = "Esecuzione dell'Algoritmo terminata.";
 	private static final String ALGORITHM_ERROR = "Problema. Esecuzione dell'algoritmo interrotta.";
@@ -22,8 +26,9 @@ public class Dijkstra {
 	 * @param matrix Matrice delle adiacenze che fornisce i collegamenti fra i nodi e i rispettivi pesi.
 	 */
 	
-	public Dijkstra(Graph graph) throws CloneNotSupportedException{
+	public Dijkstra(Graph graph, String fileName) throws CloneNotSupportedException{
 		this.graph = (Graph)graph.clone();
+		this.fileName = fileName;
 		orderVisitedNodes = new Vector<>();
 		previousSteps = new int[graph.getNodes().length];
 		nodeDistances = new Double[graph.getNodes().length];
@@ -35,7 +40,7 @@ public class Dijkstra {
 	 * è stato eseguito correttamente o se ci sono stati problemi.
 	 */
 	
-	public boolean executeAlgorithm(){
+	public boolean executeAlgorithm() throws XMLStreamException{
 		
 		/*
 		 * Fase iniziale: assegnamento. Tutte le distanze potenziali tra i nodi vengono settate 
@@ -45,7 +50,6 @@ public class Dijkstra {
 		
 		if(graph.checkIntegrity(graph)){
 			System.out.println(ALGORITHM_INITIAL_STATUS);
-			System.out.println();
 			for(Nodo node : graph.getNodes()){
 				nodeDistances[node.getIDNode()] = Double.POSITIVE_INFINITY;
 			}
@@ -140,7 +144,6 @@ public class Dijkstra {
 			sb.append("-");
 		}
 		System.out.println(sb.toString());
-		System.out.println();
 	}
 	
 	/**
@@ -148,17 +151,18 @@ public class Dijkstra {
 	 * @param shortestPath L'albero dei cammini minimi.
 	 */
 	
-	private void printShortestPath(int [] shortestPath){
-		System.out.print("Albero dei cammini minimi: ");
-		StringBuilder sb = new StringBuilder();
-		for(int i = shortestPath.length-1; i >= 0; i--){
-			sb.append(Character.toString(graph.searchNodeByID(shortestPath[i], 
-					orderVisitedNodes.toArray(new Nodo[orderVisitedNodes.size()])).getLabel()));
-			if(i!=0)
-				sb.append(" ");
+	private void printShortestPath(int [] shortestPath) throws XMLStreamException{
+		Vector<Nodo> shortest = new Vector<Nodo>();
+		for(int idNode: shortestPath){
+			for(Nodo nodo: orderVisitedNodes){
+				if(nodo.getIDNode() == idNode){
+					shortest.add(nodo);
+				}
+			}
 		}
-		System.out.println(sb.toString().replace(" ", "-"));
-		System.out.println();
+		
+		XMLWriter.executeWrite(fileName, shortest, graph.getAdjacencyMatrix());
+		
 	}
 	
 	/**
@@ -171,6 +175,7 @@ public class Dijkstra {
 	public int [] getShortestPath(int idNode){
 		Nodo [] visitedNodes = new Nodo[orderVisitedNodes.size()];
 		int [] idNodesShortestPath = new int[orderVisitedNodes.size()];
+		int [] idNodesShortestPathReverse = new int[orderVisitedNodes.size()];
 		int indexArray = 1;
 		orderVisitedNodes.toArray(visitedNodes);
 		idNodesShortestPath[0] = idNode;
@@ -181,7 +186,13 @@ public class Dijkstra {
 				isSource = true;
 			idNodesShortestPath[indexArray] = index;
 		}
-		return Arrays.copyOf(idNodesShortestPath, indexArray);
+		idNodesShortestPath = Arrays.copyOf(idNodesShortestPath, indexArray);
+		System.arraycopy(idNodesShortestPath, 0, idNodesShortestPath, 0, indexArray);
+		for(int i = idNodesShortestPath.length-1, j = 0; i >= 0; i--, j++){
+			idNodesShortestPathReverse[j] = idNodesShortestPath[i];
+		}
+		idNodesShortestPathReverse = Arrays.copyOf(idNodesShortestPathReverse, indexArray);
+		return idNodesShortestPathReverse;
 	}
 	
 	/**

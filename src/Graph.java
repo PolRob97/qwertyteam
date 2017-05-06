@@ -3,7 +3,8 @@ import java.util.Vector;
 /**
  * Classe che rappresenta il concetto di grafo.
  * @author Qwertyteam
- * @version 1.2
+ * @version 1.4
+ * @since 1.0
  */
 
 public class Graph implements Cloneable{
@@ -75,7 +76,7 @@ public class Graph implements Cloneable{
 				printStatus(MULTIPLE_DESTINATIONS);
 				return false;
 			}
-			if(!adjacencyMatrix.isLinkedToGraph(nodo.getIDNode())){
+			if(!adjacencyMatrix.isLinkedToGraph(nodo.getIDNode()) && !nodo.isDestinationNode()){
 				printStatus(NODE_NOT_LINKED);
 				return false;
 			}
@@ -134,7 +135,13 @@ public class Graph implements Cloneable{
 	private static void printStatus(String statusGraph){
 		System.out.println(statusGraph);
 	}
-
+	
+	/**
+	 * Metodo che permette di fa partire la scansione di eventuali cicli presenti
+	 * all'interno del grafo. Funziona con grafi orientati.
+	 * @return Presenza di eventuali cicli o meno.
+	 */
+	
 	public boolean isCyclic(){
 		boolean visited[] = new boolean[nodes.length];
 
@@ -153,6 +160,15 @@ public class Graph implements Cloneable{
 		return false;
 	}
 	
+	/**
+	 * Metodo ricorsivo che controlla eventuali cicli presenti all'interno del grafo. Funziona
+	 * con grafi orientati.
+	 * @param currentV Nodo corrente
+	 * @param visited Vettore che tiene traccia dei nodi visitati
+	 * @param parentV Nodo padre da cui arriva il nodo corrente
+	 * @return Riscontro della presenza di cicli.
+	 */
+	
 	public boolean isCyclicUtil(int currentV, boolean visited[], int parentV){
 		visited[currentV]=true;
 		int accanto = adjacencyMatrix.areNodesLinked(parentV, currentV);
@@ -165,6 +181,11 @@ public class Graph implements Cloneable{
 		}
 		return false;
 	}
+	
+	/**
+	 * Metodo che permette di clonare il grafo per evitare la modifica dei dati
+	 * sul grafo originale.
+	 */
 	
 	@Override
 	public Object clone() throws CloneNotSupportedException {

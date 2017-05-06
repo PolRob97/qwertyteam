@@ -1,7 +1,8 @@
 /**
  * Classe che rappresenta un singolo nodo di un grafo.
  * @author Qwertyteam
- * @version 1.2
+ * @version 1.4
+ * @since 1.0
  */
 
 public class Nodo {
@@ -31,6 +32,11 @@ public class Nodo {
 	public Nodo(char label){
 		this.label = label;
 	}
+	
+	/**
+	 * Costruttore della classe Nodo.
+	 * @param idNode ID che dovrà avere il nodo.
+	 */
 	
 	public Nodo(int idNode){
 		this.idNode = idNode;
@@ -62,6 +68,11 @@ public class Nodo {
 	public void setIDNode(int idNode){
 		this.idNode = idNode;
 	}
+	
+	/**
+	 * Metodo per settare l'etichetta del nodo.
+	 * @param label Nuova etichetta del nodo.
+	 */
 	
 	public void setLabelNode(char label){
 		this.label = label;

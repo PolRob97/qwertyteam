@@ -3,8 +3,9 @@ import java.util.Arrays;
 /**
  * Classe che permette di modellizzare una matrice delle adiacenze che tiene conto dei collegamenti tra
  * i vari nodi e i rispettivi pesi.
- * @author qwertyteam
- * @version 1.2
+ * @author Qwertyteam
+ * @version 1.4
+ * @since 1.0
  */
 
 public class MatriceAdiacenze implements Cloneable {
@@ -45,7 +46,7 @@ public class MatriceAdiacenze implements Cloneable {
 	public int areNodesLinked(int startNode, int endNode){
 		for(int i = 0; i < adjacencyMatrix.length; i++){
 			if(adjacencyMatrix[endNode][i]!=0) 
-				return 0;
+				return i;
 		}
 		return -1;
 	}
@@ -96,6 +97,8 @@ public class MatriceAdiacenze implements Cloneable {
 		for(int i = 0; i < adjacencyMatrix.length; i++){
 			if(adjacencyMatrix[idNode][i] != 0)
 				return true;
+			
+			
 		}
 		return false;
 	}
@@ -121,7 +124,12 @@ public class MatriceAdiacenze implements Cloneable {
 			System.out.println();
 		}
 	}
-
+	
+	/**
+	 * Metodo che permette di clonare la matrice delle adiacenze in modo da 
+	 * non modificare quella originale.
+	 */
+	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		final MatriceAdiacenze clone;
