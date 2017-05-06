@@ -1,14 +1,86 @@
 import java.util.Vector;
 
-public class Graph {
-	public Nodo [] nodes;
-	public MatriceAdiacenze matrix;
+/**
+ * Classe che rappresenta il concetto di grafo.
+ * @author Qwertyteam
+ * @version 1.2
+ */
+
+public class Graph implements Cloneable{
+	private Nodo [] nodes;
+	private MatriceAdiacenze adjacencyMatrix;
+	private static final String MALFORMED_GRAPH = "Il grafo è malformato!";
+	private static final String MULTIPLE_SOURCES = "Il grafo presenta nodi sorgente multipli.";
+	private static final String MULTIPLE_DESTINATIONS = "Il grafo presenta nodi destinazione multipli.";
+	private static final String NODE_NOT_LINKED = "Il grafo presenta nodi irraggiungibili.";
+	private static final String SOURCE_AND_DESTINATION = "Il grafo presenta un nodo settato come sorgente e destinazione.";
+	
+	/**
+	 * Costruttore della classe Graph. Vengono inizializzate le variabili necessarie 
+	 * al corretto funzionamento dell'oggetto Graph e vengono riordinati i nodi per ID.
+	 * @param nodes Nodi da aggiungere al grafo.
+	 * @param matrix Matrice di adiacenza del grafo.
+	 */
 	
 	public Graph(Vector<Nodo> nodes, MatriceAdiacenze matrix){
 		this.nodes = new Nodo [nodes.size()];
 		nodes.toArray(this.nodes);
-		this.matrix = matrix;
+		this.adjacencyMatrix = matrix;
 		orderGraphByID(this.nodes);
+	}
+	
+	/**
+	 * Metodo che permette di restituire la matrice di adiacenza.
+	 * @return Matrice di adiacenza.
+	 */
+	
+	public MatriceAdiacenze getAdjacencyMatrix(){
+		return adjacencyMatrix;
+	}
+	
+	/**
+	 * Metodo che permette di restituire i nodi del grafo.
+	 * @return Nodi del grafo.
+	 */
+	
+	public Nodo[] getNodes(){
+		return nodes;
+	}
+	
+	/**
+	 * Metodo che permette di controllare l'integrità del grafo. Se ci sono 
+	 * malformazioni di qualsiasi tipo l'utente ne viene informato attraverso
+	 * interfaccia a linea di comando.
+	 * @param graph Il grafo da analizzare
+	 * @return Riscontro del controllo.
+	 */
+	
+	public boolean checkIntegrity(Graph graph){
+		boolean integritySource = false;
+		boolean integrityDestination = false;
+		for(Nodo nodo : nodes){
+			if(nodo.isSourceNode() && nodo.isDestinationNode()){
+				printStatus(SOURCE_AND_DESTINATION);
+				return false;
+			}
+			if(nodo.isSourceNode() && !integritySource)
+				integritySource = true;
+			else if(nodo.isSourceNode() && integritySource){
+				printStatus(MULTIPLE_SOURCES);
+				return false;
+			}
+			if(nodo.isDestinationNode() && !integrityDestination)
+				integrityDestination = true;
+			else if(nodo.isDestinationNode() && integrityDestination){
+				printStatus(MULTIPLE_DESTINATIONS);
+				return false;
+			}
+			if(!adjacencyMatrix.isLinkedToGraph(nodo.getIDNode())){
+				printStatus(NODE_NOT_LINKED);
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**
@@ -37,4 +109,42 @@ public class Graph {
             if(!flag) break;                      
         }
 	}
+	
+	/**
+	 * Ricerca, dato un array di nodi e l'ID del nodo, il nodo.
+	 * @param idNode ID del nodo da ricercare
+	 * @param Array di nodi su cui ricercare il nodo.
+	 * @return Nodo se la ricerca è andata a buon fine, altrimenti null.
+	 */
+	
+	public Nodo searchNodeByID(int idNode, Nodo [] nodes){
+		for(Nodo node : nodes){
+			if(node.getIDNode() == idNode)
+				return node;
+		}
+		return null;
+	}
+	
+	/**
+	 * Stampa a schermo lo stato del Grafo. Permette di informare all'utente se 
+	 * il grafo presenta malformazioni di qualche tipo oppure se è integro.
+	 * @param statusGraph Stato del grafo.
+	 */
+	
+	private static void printStatus(String statusGraph){
+		System.out.println(statusGraph);
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		final Graph clone;
+        try {
+            clone = (Graph) super.clone();
+        }
+        catch (CloneNotSupportedException ex) {
+            throw new RuntimeException("superclass messed up", ex);
+        }
+        clone.nodes = this.nodes.clone();
+        return clone;
+    }
 }

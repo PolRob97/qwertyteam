@@ -2,75 +2,49 @@ import java.util.Vector;
 
 public class Test {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		System.out.println("Hello World!");
-		
+	public static void main(String[] args) throws CloneNotSupportedException{
 		/*
 		 * Creazione dei nodi del grafo!
 		 */
 		
-		//Nodo nodoA = new Nodo(0, 'A');
-		//Nodo nodoB = new Nodo(1, 'B');
-		Nodo nodoC = new Nodo(0, 'C');
-		Nodo nodoD = new Nodo(1, 'D');
-		
-		Nodo nodoE = new Nodo(2, 'E');
+		Nodo nodoA = new Nodo('A');
+		nodoA.setAsSourceNode();
+		Nodo nodoB = new Nodo(1, 'B');
+		Nodo nodoC = new Nodo(4, 'C');
+		Nodo nodoD = new Nodo(2, 'D');
+		Nodo nodoE = new Nodo(5, 'E');
 		Nodo nodoF = new Nodo(3, 'F');
-		//Nodo nodoG = new Nodo(6, 'G');
-		nodoD.setAsDestinationNode();
+		Nodo nodoG = new Nodo(6, 'G');
+		nodoG.setAsDestinationNode();
 		
 		/*
 		 * Aggiunta dei nodi al Grafo!
 		 */
-		Vector<Nodo> nodes = new Vector<Nodo>(4);
+		Vector<Nodo> nodes = new Vector<Nodo>(7);
+		nodes.add(nodoA);
+		nodes.add(nodoB);
 		nodes.add(nodoF);
 		nodes.add(nodoC);
 		nodes.add(nodoE);
 		nodes.add(nodoD);
-		
-		
+		nodes.add(nodoG);
+
 		/*
 		 * Creazione dei rami che collegano i vari nodi
 		 */
 		
-		MatriceAdiacenze matrix = new MatriceAdiacenze(nodes.size());
-		/*matrix.collegaNodi(nodoA.getIDNodo(), nodoB.getIDNodo(), 2);
-		matrix.collegaNodi(nodoA.getIDNodo(), nodoC.getIDNodo(), 8);
-		matrix.collegaNodi(nodoD.getIDNodo(), nodoC.getIDNodo(), 2);
-		matrix.collegaNodi(nodoB.getIDNodo(), nodoE.getIDNodo(), 5);
-		matrix.collegaNodi(nodoB.getIDNodo(), nodoD.getIDNodo(), 2);
-		matrix.collegaNodi(nodoE.getIDNodo(), nodoG.getIDNodo(), 8);
-		matrix.collegaNodi(nodoC.getIDNodo(), nodoF.getIDNodo(), 5);
-		matrix.collegaNodi(nodoD.getIDNodo(), nodoF.getIDNodo(), 7);
-		matrix.collegaNodi(nodoF.getIDNodo(), nodoG.getIDNodo(), 2);*/
-		
-		/*matrix.collegaNodi(nodoA.getIDNodo(), nodoC.getIDNodo(), 4);
-		matrix.collegaNodi(nodoA.getIDNodo(), nodoD.getIDNodo(), 3);
-		matrix.collegaNodi(nodoC.getIDNodo(), nodoE.getIDNodo(), 2);
-		matrix.collegaNodi(nodoE.getIDNodo(), nodoB.getIDNodo(), 7);
-		matrix.collegaNodi(nodoD.getIDNodo(), nodoB.getIDNodo(), 6);
-		matrix.collegaNodi(nodoD.getIDNodo(), nodoE.getIDNodo(), 1);
-		nodoB.setAsDestinationNode();*/
-		
-		matrix.linkNode(nodoC.getIDNode(), nodoD.getIDNode(), 6);
-		matrix.linkNode(nodoC.getIDNode(), nodoF.getIDNode(), 1);
-		matrix.linkNode(nodoF.getIDNode(), nodoE.getIDNode(), 1);
-		matrix.linkNode(nodoE.getIDNode(), nodoD.getIDNode(), 1);
+		MatriceAdiacenze matrix = new MatriceAdiacenze(nodes.size(), false);
+		matrix.linkNode(nodoA.getIDNode(), nodoB.getIDNode(), 2);
+		matrix.linkNode(nodoA.getIDNode(), nodoC.getIDNode(), 8);
+		matrix.linkNode(nodoD.getIDNode(), nodoC.getIDNode(), 2);
+		matrix.linkNode(nodoB.getIDNode(), nodoE.getIDNode(), 5);
+		matrix.linkNode(nodoB.getIDNode(), nodoD.getIDNode(), 2);
+		matrix.linkNode(nodoE.getIDNode(), nodoG.getIDNode(), 8);
+		matrix.linkNode(nodoC.getIDNode(), nodoF.getIDNode(), 5);
+		matrix.linkNode(nodoD.getIDNode(), nodoF.getIDNode(), 7);
+		matrix.linkNode(nodoF.getIDNode(), nodoG.getIDNode(), 2);
 		
 		Graph graph = new Graph(nodes, matrix);
-		
-		/*
-		 * Stampa di prova a schermo della matrice delle adiacenze
-		 */
-		
-		for(int i = 0; i < matrix.getAdjacencyMatrix().length; i++){
-			for(int j = 0; j < matrix.getAdjacencyMatrix().length; j++)
-				System.out.print("\t" + matrix.getAdjacencyMatrix()[i][j]);
-			System.out.println();
-		}
-		
-		
 		/*
 		 * Applicazione dell'algoritmo di Dijkstra
 		 */

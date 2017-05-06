@@ -4,7 +4,7 @@ import java.util.Vector;
 /**
  * Classe che fornisce i metodi per applicare ad un dato grafo l'algoritmo di Dijkstra.
  * @author Qwertyteam
- * @version 1.0
+ * @version 1.2
  */
 
 public class Dijkstra {
@@ -12,6 +12,9 @@ public class Dijkstra {
 	private Double [] nodeDistances; 
 	private Vector<Nodo> orderVisitedNodes;
 	private int [] previousSteps;
+	private static final String ALGORITHM_INITIAL_STATUS = "Inizio esecuzione dell'Algoritmo di Dijkstra...";
+	private static final String ALGORITHM_FINAL_STATUS = "Esecuzione dell'Algoritmo terminata.";
+	private static final String ALGORITHM_ERROR = "Problema. Esecuzione dell'algoritmo interrotta.";
 	
 	/**
 	 * Costruttore della classe.
@@ -19,18 +22,20 @@ public class Dijkstra {
 	 * @param matrix Matrice delle adiacenze che fornisce i collegamenti fra i nodi e i rispettivi pesi.
 	 */
 	
-	public Dijkstra(Graph graph){
-		this.graph = graph;
+	public Dijkstra(Graph graph) throws CloneNotSupportedException{
+		this.graph = (Graph)graph.clone();
 		orderVisitedNodes = new Vector<>();
-		previousSteps = new int[graph.nodes.length];
-		nodeDistances = new Double[graph.nodes.length];
+		previousSteps = new int[graph.getNodes().length];
+		nodeDistances = new Double[graph.getNodes().length];
 	}
 	
 	/**
 	 * Metodo che permette di eseguire l'algoritmo di Dijkstra sul grafo.
+	 * @return Variabile booleana che permette di mostrare se l'algoritmo
+	 * è stato eseguito correttamente o se ci sono stati problemi.
 	 */
 	
-	public void executeAlgorithm(){
+	public boolean executeAlgorithm(){
 		
 		/*
 		 * Fase iniziale: assegnamento. Tutte le distanze potenziali tra i nodi vengono settate 
@@ -38,57 +43,63 @@ public class Dijkstra {
 		 * a null dalla JVM.
 		 */
 		
-		for(Nodo node : graph.nodes){
-			nodeDistances[node.getIDNode()] = Double.POSITIVE_INFINITY;
-		}
-		
-		nodeDistances[0] = 0.0;
-		previousSteps[0] = 0;
-		
-		/*
-		 * Fase intermedia: ciclo principale. Il ciclo non si interrompe finchè c'è un blocco nel
-		 * grafo causato da nodi irraggiungibili oppure se è stato raggiunto il nodo di destinazione.
-		 * 
-		 */
-		
-		while(true){
-			int indexNode = getIndexOfMinimumNodeDistance(); //imposta l'indice del nodo che ha distanza minore
-			if(nodeDistances[indexNode] == Double.POSITIVE_INFINITY) //se il grafo presenta nodi irraggiungibili
-				break;
-			orderVisitedNodes.addElement(graph.nodes[indexNode]); //aggiungi il nodo alla lista dei nodi visitati
-			if(graph.nodes[indexNode].isDestinationNode()){ //se si tratta del nodo di destinazione
-				printOrderVisitedNodes();
-				printShortestPath(indexNode);
-				break;
+		if(graph.checkIntegrity(graph)){
+			System.out.println(ALGORITHM_INITIAL_STATUS);
+			System.out.println();
+			for(Nodo node : graph.getNodes()){
+				nodeDistances[node.getIDNode()] = Double.POSITIVE_INFINITY;
 			}
 			
-			graph.nodes[indexNode] = null; //libera la memoria
+			nodeDistances[0] = 0.0;
+			previousSteps[0] = 0;
 			
 			/*
-			 * Fase importante: ciclo interno. Viene eseguito per ogni nodo adiacente a quello che ha
-			 * distanza minore. La variabile alt tiene in memoria il costo per raggiungere il nodo adiacente
-			 * a partire dal nodo iniziale. Se il costo contenuto nella variabile è minore del costo 
-			 * che il nodo aveva precedentemente esso viene aggiornato. Se la condizione è vera viene 
-			 * registrato il passo per arrivare al nodo adiacente (ossia si tiene conto del nodo che ha 
-			 * permesso di raggiungere quello adiacente con il meno costo possibile).
+			 * Fase intermedia: ciclo principale. Il ciclo non si interrompe finchè c'è un blocco nel
+			 * grafo causato da nodi irraggiungibili oppure se è stato raggiunto il nodo di destinazione.
+			 * 
 			 */
 			
-			int [] idLinkedNodes = graph.matrix.getIndexesOfLinkedNodes(indexNode);
-			for(int indexLinkedNode : searchNodeNotAlreadyVisited(idLinkedNodes) ){
-				double temporaryWeight = nodeDistances[indexNode] + graph.matrix.getAdjacencyMatrix()[indexNode][indexLinkedNode];
-				if(temporaryWeight < nodeDistances[indexLinkedNode]){
-					nodeDistances[indexLinkedNode] = temporaryWeight;
-					previousSteps[indexLinkedNode] = indexNode;
+			while(true){
+				int indexNode = getIndexOfMinimumNodeDistance(); //imposta l'indice del nodo che ha distanza minore
+				orderVisitedNodes.addElement(graph.getNodes()[indexNode]); //aggiungi il nodo alla lista dei nodi visitati
+				if(graph.getNodes()[indexNode].isDestinationNode()){ //se si tratta del nodo di destinazione
+					printOrderVisitedNodes();
+					printShortestPath(getShortestPath(indexNode));
+					break;
 				}
+				
+				graph.getNodes()[indexNode] = null; //libera la memoria
+				
+				/*
+				 * Fase importante: ciclo interno. Viene eseguito per ogni nodo adiacente a quello che ha
+				 * distanza minore. La variabile alt tiene in memoria il costo per raggiungere il nodo adiacente
+				 * a partire dal nodo iniziale. Se il costo contenuto nella variabile è minore del costo 
+				 * che il nodo aveva precedentemente esso viene aggiornato. Se la condizione è vera viene 
+				 * registrato il passo per arrivare al nodo adiacente (ossia si tiene conto del nodo che ha 
+				 * permesso di raggiungere quello adiacente con il meno costo possibile).
+				 */
+				
+				int [] idLinkedNodes = graph.getAdjacencyMatrix().getIndexesOfLinkedNodes(indexNode);
+				for(int indexLinkedNode : getIDNodesNotVisited(idLinkedNodes) ){
+					double temporaryWeight = nodeDistances[indexNode] + graph.getAdjacencyMatrix().getAdjacencyMatrix()[indexNode][indexLinkedNode];
+					if(temporaryWeight < nodeDistances[indexLinkedNode]){
+						nodeDistances[indexLinkedNode] = temporaryWeight;
+						previousSteps[indexLinkedNode] = indexNode;
+					}
+				}
+				nodeDistances[indexNode] = null; //libera la memoria
 			}
-			nodeDistances[indexNode] = null; //libera la memoria
+		}else{
+			System.out.println(ALGORITHM_ERROR);
+			return false;
 		}
-		
-		
+		System.out.println(ALGORITHM_FINAL_STATUS);
+		return true;
 	}
 	
 	/**
-	 * Metodo che permette di scegliere il nodo che ha distanza minore tra quelli non ancora visitati.
+	 * Metodo che permette di scegliere il nodo che ha distanza minore tra quelli non ancora visitati
+	 * dall'Algoritmo di Dijkstra.
 	 * @return Indice del nodo scelto.
 	 */
 	
@@ -117,75 +128,88 @@ public class Dijkstra {
 	}
 	
 	/**
-	 * Metodo che permette la stampa a schermo di tutti i nodi del grafo visitati dall'algoritmo.
+	 * Metodo che permette la stampa a schermo di tutti i nodi del grafo 
+	 * visitati dall'Algoritmo di Dijkstra.
 	 */
 	
 	private void printOrderVisitedNodes(){
-		System.out.println("L'ordine dei nodi visitati è: ");
-		for(Nodo node : orderVisitedNodes)
-			System.out.print(node.getLabel() + "-");
+		System.out.print("L'ordine dei nodi visitati è: ");
+		StringBuilder sb = new StringBuilder();
+		for(Nodo node : orderVisitedNodes){
+			sb.append(Character.toString(node.getLabel()));
+			sb.append("-");
+		}
+		System.out.println(sb.toString());
 		System.out.println();
 	}
 	
 	/**
 	 * Metodo che permette la stampa a schermo dell'albero dei cammini minimi del grafo.
-	 * @param idNode ID del nodo di destinazione.
+	 * @param shortestPath L'albero dei cammini minimi.
 	 */
 	
-	private void printShortestPath(int idNode){
-		System.out.print("Albero dei cammini minimi: " + searchNodeByID(idNode).getLabel() + "-");
+	private void printShortestPath(int [] shortestPath){
+		System.out.print("Albero dei cammini minimi: ");
+		StringBuilder sb = new StringBuilder();
+		for(int i = shortestPath.length-1; i >= 0; i--){
+			sb.append(Character.toString(graph.searchNodeByID(shortestPath[i], 
+					orderVisitedNodes.toArray(new Nodo[orderVisitedNodes.size()])).getLabel()));
+			if(i!=0)
+				sb.append(" ");
+		}
+		System.out.println(sb.toString().replace(" ", "-"));
+		System.out.println();
+	}
+	
+	/**
+	 * Metodo che permette di creare l'albero dei cammini minimi.
+	 * @param idNode Nodo di destinazione del grafo analizzato.
+	 * @return Array contenente l'ID dei nodi scelti per formare l'albero
+	 * dei cammini minimi.
+	 */
+	
+	public int [] getShortestPath(int idNode){
+		Nodo [] visitedNodes = new Nodo[orderVisitedNodes.size()];
+		int [] idNodesShortestPath = new int[orderVisitedNodes.size()];
+		int indexArray = 1;
+		orderVisitedNodes.toArray(visitedNodes);
+		idNodesShortestPath[0] = idNode;
 		boolean isSource = false;
-		for(int index = idNode; index != 0 && !isSource;){
+		for(int index = idNode; index != 0 && !isSource; indexArray++){
 			index = previousSteps[index];
 			if(index == 0)
 				isSource = true;
-			System.out.print(searchNodeByID(index).getLabel() + "-");
-			
+			idNodesShortestPath[indexArray] = index;
 		}
+		return Arrays.copyOf(idNodesShortestPath, indexArray);
 	}
 	
 	/**
-	 * Ricerca nel Vector dei nodi visitati il nodo, dato l'ID.
-	 * @param idNode ID del nodo da ricercare
-	 * @return Nodo se la ricerca è andata a buon fine, altrimenti null.
+	 * Ricerca nell'Array l'ID dei nodi non ancora stati visitati
+	 * dall'Algoritmo di Dijkstra.
+	 * @param idNodes ID dei nodi da analizzare.
+	 * @return Array contenente l'ID dei nodi non ancora visitati.
 	 */
 	
-	private Nodo searchNodeByID(int idNode){
-		for(Nodo node : orderVisitedNodes){
-			if(node.getIDNode() == idNode)
-				return node;
-		}
-		return null;
-	}
-	
-	/**
-	 * Ricerca nell'array l'ID dei nodi ancora non stati visitati
-	 */
-	
-	public int [] searchNodeNotAlreadyVisited(int [] idNodes){
+	public int [] getIDNodesNotVisited(int [] idNodes){
 		int [] idNodesNotVisited = new int [idNodes.length];
 		int indexArray = 0;
-		for(Nodo nodo : orderVisitedNodes){
-			if(!isVisitedNode(nodo.getIDNode(), orderVisitedNodes)){
-				idNodesNotVisited[indexArray] = nodo.getIDNode();
+		boolean isVisited = false;
+		
+		for(int i = 0; i < idNodes.length; i++){
+			for(int j = 0; j < orderVisitedNodes.size() && !isVisited ; j++){
+				if(orderVisitedNodes.get(j).getIDNode() == idNodes[i]){
+					isVisited = true;
+				}
+			}
+			if(!isVisited){
+				idNodesNotVisited[indexArray] = idNodes[i];
 				indexArray++;
+			}else{
+				isVisited = false;
 			}
 		}
+		
 		return Arrays.copyOf(idNodesNotVisited, indexArray);
-	}
-	
-	/**
-	 * Metodo che permette di stabilire, dato l'ID del nodo, se esso è già stato visitato.
-	 * @param idNode ID del nodo da analizzare.
-	 * @param visitedNodes Lista dei nodi già visitati.
-	 * @return Riscontro, true se è già stato visitato, false altrimenti.
-	 */
-	
-	public boolean isVisitedNode(int idNode, Vector<Nodo> visitedNodes){
-		for(Nodo node : visitedNodes){
-			if(idNode == node.getIDNode())
-				return true;
-		}
-		return false;
 	}
 }
