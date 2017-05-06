@@ -1,3 +1,5 @@
+import java.util.Vector;
+
 public class Test {
 
 	public static void main(String[] args) {
@@ -21,14 +23,18 @@ public class Test {
 		/*
 		 * Aggiunta dei nodi al Grafo!
 		 */
-		Nodo [] nodes = {nodoF, nodoC, nodoE, nodoD};
+		Vector<Nodo> nodes = new Vector<Nodo>(4);
+		nodes.add(nodoF);
+		nodes.add(nodoC);
+		nodes.add(nodoE);
+		nodes.add(nodoD);
 		
 		
 		/*
 		 * Creazione dei rami che collegano i vari nodi
 		 */
 		
-		MatriceAdiacenze matrix = new MatriceAdiacenze(nodes.length);
+		MatriceAdiacenze matrix = new MatriceAdiacenze(nodes.size());
 		/*matrix.collegaNodi(nodoA.getIDNodo(), nodoB.getIDNodo(), 2);
 		matrix.collegaNodi(nodoA.getIDNodo(), nodoC.getIDNodo(), 8);
 		matrix.collegaNodi(nodoD.getIDNodo(), nodoC.getIDNodo(), 2);
@@ -68,7 +74,7 @@ public class Test {
 		/*
 		 * Applicazione dell'algoritmo di Dijkstra
 		 */
-		Dijkstra dijkstra = new Dijkstra(graph, matrix);
+		Dijkstra dijkstra = new Dijkstra(graph);
 		dijkstra.executeAlgorithm();
 	}
 

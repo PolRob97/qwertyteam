@@ -61,13 +61,10 @@ public class MatriceAdiacenze {
 	 * @return Lista degli ID dei nodi collegati al nodo iniziale e non ancora visitati.
 	 */
 	
-	public int [] getIndexesOfLinkedNodes(int idNode, Vector<Nodo> visitedNodes){
+	public int [] getIndexesOfLinkedNodes(int idNode){
 		int indexArray = 0;
 		int [] indexesOfLinkedNodes = new int[0];
 		for(int j = 0; j < adjacencyMatrix.length; j++){
-			if(adjacencyMatrix[idNode][j]!=0 && isVisitedNode(j, visitedNodes)){
-				continue;
-			}
 			if(adjacencyMatrix[idNode][j] != 0){ //se il nodo è collegato
 				indexArray++;
 				indexesOfLinkedNodes = Arrays.copyOf(indexesOfLinkedNodes, indexArray); //rimodellizza dimensione array
@@ -75,20 +72,5 @@ public class MatriceAdiacenze {
 			}	
 		}
 		return indexesOfLinkedNodes;
-	}
-	
-	/**
-	 * Metodo che permette di stabilire, dato l'ID del nodo, se esso è già stato visitato.
-	 * @param idNode ID del nodo da analizzare.
-	 * @param visitedNodes Lista dei nodi già visitati.
-	 * @return Riscontro, true se è già stato visitato, false altrimenti.
-	 */
-	
-	public boolean isVisitedNode(int idNode, Vector<Nodo> visitedNodes){
-		for(Nodo node : visitedNodes){
-			if(idNode == node.getIDNode())
-				return true;
-		}
-		return false;
 	}
 }

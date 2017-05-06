@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Vector;
 
 /**
@@ -11,7 +12,6 @@ public class Dijkstra {
 	private Double [] nodeDistances; 
 	private Vector<Nodo> orderVisitedNodes;
 	private int [] previousSteps;
-	private MatriceAdiacenze matrix;
 	
 	/**
 	 * Costruttore della classe.
@@ -19,10 +19,8 @@ public class Dijkstra {
 	 * @param matrix Matrice delle adiacenze che fornisce i collegamenti fra i nodi e i rispettivi pesi.
 	 */
 	
-	public Dijkstra(Graph graph, MatriceAdiacenze matrix){
+	public Dijkstra(Graph graph){
 		this.graph = graph;
-		this.matrix = matrix;
-		orderGraphByID(graph.nodes);
 		orderVisitedNodes = new Vector<>();
 		previousSteps = new int[graph.nodes.length];
 		nodeDistances = new Double[graph.nodes.length];
@@ -75,8 +73,9 @@ public class Dijkstra {
 			 * permesso di raggiungere quello adiacente con il meno costo possibile).
 			 */
 			
-			for(int indexLinkedNode : matrix.getIndexesOfLinkedNodes(indexNode, orderVisitedNodes)){
-				double temporaryWeight = nodeDistances[indexNode] + matrix.getAdjacencyMatrix()[indexNode][indexLinkedNode];
+			int [] idLinkedNodes = graph.matrix.getIndexesOfLinkedNodes(indexNode);
+			for(int indexLinkedNode : searchNodeNotAlreadyVisited(idLinkedNodes) ){
+				double temporaryWeight = nodeDistances[indexNode] + graph.matrix.getAdjacencyMatrix()[indexNode][indexLinkedNode];
 				if(temporaryWeight < nodeDistances[indexLinkedNode]){
 					nodeDistances[indexLinkedNode] = temporaryWeight;
 					previousSteps[indexLinkedNode] = indexNode;
@@ -115,33 +114,6 @@ public class Dijkstra {
 			}
 		}
 		return indexNodeWithMinimumValue;
-	}
-	
-	/**
-	 * Metodo che permette di riordinare il grafo in ordine crescente di ID. Importante ricordare che
-	 * il nodo con ID = 0 è sempre il nodo sorgente. L'algoritmo utilizzato non è nient'altro che il 
-	 * Bubble-Sort.
-	 * @param graph Il grafo da riordinare
-	 */
-	
-	public static void orderGraphByID(Nodo [] graph){
-		for(int index = 0; index < graph.length; index++) {
-            boolean flag = false;
-            for(int j = 0; j < graph.length-1; j++) {
-                if(graph[j].getIDNode() >graph[j+1].getIDNode()) {
-                    Nodo node = graph[j];
-                    graph[j] = graph[j+1];
-                    graph[j+1] = node;
-                    flag=true; //Lo setto a true per indicare che é avvenuto almeno uno scambio
-                }
-            }
-            
-            /*
-             * Se flag=false allora vuol dire che nell' ultima iterazione non ci sono stati scambi, quindi 
-             * il metodo può terminare poiché l' array risulta essere ordinato
-             */
-            if(!flag) break;                      
-        }
 	}
 	
 	/**
@@ -184,5 +156,36 @@ public class Dijkstra {
 				return node;
 		}
 		return null;
+	}
+	
+	/**
+	 * Ricerca nell'array l'ID dei nodi ancora non stati visitati
+	 */
+	
+	public int [] searchNodeNotAlreadyVisited(int [] idNodes){
+		int [] idNodesNotVisited = new int [idNodes.length];
+		int indexArray = 0;
+		for(Nodo nodo : orderVisitedNodes){
+			if(!isVisitedNode(nodo.getIDNode(), orderVisitedNodes)){
+				idNodesNotVisited[indexArray] = nodo.getIDNode();
+				indexArray++;
+			}
+		}
+		return Arrays.copyOf(idNodesNotVisited, indexArray);
+	}
+	
+	/**
+	 * Metodo che permette di stabilire, dato l'ID del nodo, se esso è già stato visitato.
+	 * @param idNode ID del nodo da analizzare.
+	 * @param visitedNodes Lista dei nodi già visitati.
+	 * @return Riscontro, true se è già stato visitato, false altrimenti.
+	 */
+	
+	public boolean isVisitedNode(int idNode, Vector<Nodo> visitedNodes){
+		for(Nodo node : visitedNodes){
+			if(idNode == node.getIDNode())
+				return true;
+		}
+		return false;
 	}
 }
