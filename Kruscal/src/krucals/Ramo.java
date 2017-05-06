@@ -28,7 +28,7 @@ public class Ramo {
 		return -1;
 	}
 	
-	public void potaRamo(Nodo p1){
+	public void potaRamo(Nodo p1, double[] distanze){
 		int posPota=posPunto(p1);
 		if(posPota==-1){
 			System.out.println(NO_DEL);

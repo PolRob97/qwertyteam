@@ -33,11 +33,8 @@ public class Graph {
         int adj_vertex=adjacency.vicino(parent_vertex, current_vertex);
         System.out.println(adj_vertex);
         while(adj_vertex!=-1){
-        	if(!visited[adj_vertex])
-        		if (isCyclicUtil(adj_vertex, visited, current_vertex))
-                    return true;
-        	if (adj_vertex != parent_vertex)
-                return true;
+        	if(!visited[adj_vertex]) if(isCyclicUtil(adj_vertex, visited, current_vertex)) return true;
+        	if(adj_vertex != parent_vertex) return true;
         }
         System.out.println("si");
         return false;
@@ -60,19 +57,22 @@ public class Graph {
         return false;
     }*/
 	    // Returns true if the graph contains a cycle, else false.
-    public boolean isCyclic() {
+    public boolean isCyclic(){
         // Mark all the vertices as not visited and not part of
         // recursion stack
         boolean visited[] = new boolean[n_vertices];
-        for (int i = 0; i < n_vertices; i++)
-            visited[i] = false;
+        for(int i = 0; i < n_vertices; i++) visited[i] = false;
 	        // Call the recursive helper function to detect cycle in
         // different DFS trees
+       // for(int i=0; i < n_vertices; i++){
+        if(isCyclicUtil(0, visited, -1)) return true;
+        else return false;
+        /*}
         for (int u = 0; u < n_vertices; u++)
         	if (!visited[u])
         		if (isCyclicUtil(u, visited, -1))
-        			return true;
-        return false;
+        			return true;*/
+        //return false;
     }
 	    // Driver method to test above methods, aka test
     public static void main(String args[]) {
@@ -86,7 +86,7 @@ public class Graph {
         g1.addEdge(3, 4);
 	    if(g1.isCyclic()) System.out.println("Graph contains cycle");
         else System.out.println("Graph doesn't contains cycle");
-	        //Not cyclic
+	    //Not cyclic
         Graph g2 = new Graph(3);
         g2.addEdge(0, 1);
         g2.addEdge(1, 2);
