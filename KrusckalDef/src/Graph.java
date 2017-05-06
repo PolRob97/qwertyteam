@@ -17,8 +17,12 @@ public class Graph {
 		int accanto=adiacenze.vicino(parentV, currentV);
 		System.out.println(accanto);
 		while(accanto!=-1){
-			if(!visited[accanto]) if(isCyclicUtil(accanto, visited, currentV)) return true;
-			if(accanto!=parentV) return true;
+			System.out.println("Nelciclowhile");
+			if(!visited[accanto]){
+				if(isCyclicUtil(accanto, visited, currentV)) return true;
+				else return false;
+			}
+			if(accanto != parentV) return true;
 		}
 		System.out.println("merda");
 		return false;
@@ -33,11 +37,13 @@ public class Graph {
 			if(!visited[i]){
 				System.out.println("crd");
 				if(isCyclicUtil(i, visited, -1)){
+					System.out.println("mammami1a");
 					return true;
 				}
-			}			
+			}
+			System.out.println("mammami2a");
 		}
-		System.out.println("mammamia");
+		System.out.println("mammam3ia");
 		return false;
 		
 	}
@@ -53,9 +59,11 @@ public class Graph {
 		if(g1.isCyclic()) System.out.println("Graph contiene cicli");
 		else System.out.println("Nessun ciclo");
 		//Non ciclico ma al momento è ciclico
-		Graph g2 = new Graph(3);
+		Graph g2 = new Graph(5);
 		g2.aggSpigolo(0, 1);
 		g2.aggSpigolo(1, 2);
+		g2.aggSpigolo(2, 3);
+		g2.aggSpigolo(3, 0);
 		if(g2.isCyclic()) System.out.println("Graph contiene cicli");
 		else System.out.println("Nessun ciclo");
 
