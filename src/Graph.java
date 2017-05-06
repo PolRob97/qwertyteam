@@ -135,6 +135,37 @@ public class Graph implements Cloneable{
 		System.out.println(statusGraph);
 	}
 
+	public boolean isCyclic(){
+		boolean visited[] = new boolean[nodes.length];
+
+		for(int i=0; i<nodes.length; i++){
+			visited[i]=false;
+		}
+		
+		for(int i=0; i<nodes.length; i++){
+			if(!visited[i]){
+				if(isCyclicUtil(i, visited, -1)){
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean isCyclicUtil(int currentV, boolean visited[], int parentV){
+		visited[currentV]=true;
+		int accanto = adjacencyMatrix.areNodesLinked(parentV, currentV);
+		while(accanto!=-1){
+			if(!visited[accanto]){
+				if(isCyclicUtil(accanto, visited, currentV)) return true;
+				else return false;
+			}
+			if(accanto != parentV) return true;
+		}
+		return false;
+	}
+	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		final Graph clone;

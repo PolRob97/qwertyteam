@@ -36,6 +36,20 @@ public class MatriceAdiacenze implements Cloneable {
 	}
 	
 	/**
+	 * Metodo che permette di verificare se due nodi sono collegati o meno.
+	 * @param startNode Nodo di partenza
+	 * @param endNode Nodo di arrivo
+	 * @return ID del nodo 
+	 */
+	
+	public int areNodesLinked(int startNode, int endNode){
+		for(int i = 0; i < adjacencyMatrix.length; i++){
+			if(adjacencyMatrix[endNode][i]!=0) 
+				return 0;
+		}
+		return -1;
+	}
+	/**
 	 * Metodo che permette di collegare due nodi. Se il grafo non è orientato
 	 * il collegamento è simmetrico, altrimenti il collegamento viene effettuato
 	 * in direzione del nodo di destinazione.

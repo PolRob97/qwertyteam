@@ -32,6 +32,10 @@ public class Nodo {
 		this.label = label;
 	}
 	
+	public Nodo(int idNode){
+		this.idNode = idNode;
+	}
+	
 	/**
 	 * Metodo per ricavare l'ID del nodo.
 	 * @return ID del nodo
@@ -57,6 +61,10 @@ public class Nodo {
 	
 	public void setIDNode(int idNode){
 		this.idNode = idNode;
+	}
+	
+	public void setLabelNode(char label){
+		this.label = label;
 	}
 	
 	/**
